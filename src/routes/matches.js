@@ -15,7 +15,7 @@ matchRouter.get("/",async (req,res)=>{
     const parsed = listMatchesQuerySchema.safeParse(req.query);
 
     if(!parsed.success){
-        return res.status(400).json({error:'Invalid Query',details:JSON.stringify(parsed.error)});
+        return res.status(400).json({error:'Invalid Query',details:parsed.error});
     }
 
     const limit = Math.min(parsed.data.limit ?? 50, MAX_LIMIT);
@@ -39,7 +39,7 @@ matchRouter.post('/',async (req,res)=>{
     
 
     if(!parsed.success){
-        return res.status(400).json({error:'Invalid Payload',details:JSON.stringify(parsed.error)});
+        return res.status(400).json({error:'Invalid Payload',details:parsed.error});
     }
 
     const {data:{startTime,endTime,homeScore,awayScore}} = parsed;
@@ -56,6 +56,8 @@ matchRouter.post('/',async (req,res)=>{
 
         res.status(201).json({data:event})
     } catch(e){
-        res.status(500).json({error:'Failed to create Match',details:JSON.stringify(e)})
+        console.error('Failed to create match:', e);
+        res.status(500).json({error:'Failed to create Match'})
+
     }
 })
